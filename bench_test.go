@@ -7,7 +7,7 @@ import (
   "rand"
 )
 
-const size = 1000000
+const size = 10000
 var shuffled []int
 func init() {
   shuffled = make([]int, size)
@@ -50,7 +50,7 @@ func BenchmarkSmoothsortOnUnsorted(b *testing.B) {
   v := make([]int, size)
   for i := 0; i < b.N; i++ {
     fillReverse(v)
-    smooth.Sort(v)
+    smooth.Ints(v)
   }
 }
 
@@ -66,7 +66,7 @@ func BenchmarkSmoothsortOnSorted(b *testing.B) {
   v := make([]int, size)
   fill(v)
   for i := 0; i < b.N; i++ {
-    smooth.Sort(v)
+    smooth.Ints(v)
   }
 }
 
@@ -86,7 +86,7 @@ func BenchmarkSmoothsortOnShuffled(b *testing.B) {
     for i := range v {
       v[i] = shuffled[i]
     }
-    smooth.Sort(v)
+    smooth.Ints(v)
   }
 }
 
@@ -94,7 +94,7 @@ func BenchmarkSmoothsortOnSorted1000(b *testing.B) {
   v := make([]int, 1000)
   fill(v)
   for i := 0; i < b.N; i++ {
-    smooth.Sort(v)
+    smooth.Ints(v)
   }
 }
 
@@ -102,7 +102,7 @@ func BenchmarkSmoothsortOnSorted10000(b *testing.B) {
   v := make([]int, 10000)
   fill(v)
   for i := 0; i < b.N; i++ {
-    smooth.Sort(v)
+    smooth.Ints(v)
   }
 }
 
@@ -110,7 +110,7 @@ func BenchmarkSmoothsortOnSorted100000(b *testing.B) {
   v := make([]int, 100000)
   fill(v)
   for i := 0; i < b.N; i++ {
-    smooth.Sort(v)
+    smooth.Ints(v)
   }
 }
 
@@ -118,7 +118,7 @@ func BenchmarkSmoothsortOnSorted1000000(b *testing.B) {
   v := make([]int, 1000000)
   fill(v)
   for i := 0; i < b.N; i++ {
-    smooth.Sort(v)
+    smooth.Ints(v)
   }
 }
 

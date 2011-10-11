@@ -5,6 +5,10 @@
 // O(n log n) time as the input set transitions from sorted to unsorted.
 package smooth
 
+import (
+  "sort"
+)
+
 var leo []int
 
 func init() {
@@ -24,23 +28,21 @@ type leap struct {
 // Stringify will reorder the root nodes to make sure that they are in
 // increasing order.  This is called when a new heap is added at the end
 // such that the only root node that is out of order is the new one.
-func stringify(v []int, leaps []leap) int {
+func stringify(v sort.Interface, leaps []leap) int {
   k := len(leaps) - 1
   for j := k - 1; j >= 0; j-- {
     jr := leaps[j].root
     kr := leaps[k].root
-    vj := v[jr]
-    vk := v[kr]
-    if vj > vk {
+    if v.Less(kr, jr) {
       size := leaps[k].size
       if size <= 1 {
-        v[kr],v[jr] = vj,vk
+        v.Swap(jr, kr)
         k = j
       } else {
         right := leaps[k].root - 1
         left := right - leo[leaps[k].size - 2]
-        if size <= 1 || vj > v[right] && vj > v[left] {
-          v[kr],v[jr] = vj,vk
+        if size <= 1 || v.Less(right, jr) && v.Less(left, jr) {
+          v.Swap(jr, kr)
           k = j
         }
       }
@@ -56,24 +58,21 @@ func stringify(v []int, leaps []leap) int {
 // Heapify is called when two heaps are combined under a new root node.  Since
 // the two sub-heaps are necessarily heaps it suffices to swap this node with
 // its largest child repeatedly until it is larger than both of its children.
-func heapify(v []int, cleap leap) {
+func heapify(v sort.Interface, cleap leap) {
   for cleap.size > 1 {
     right := cleap.root - 1
     left := right - leo[cleap.size - 2]
-    vl := v[left]
-    vr := v[right]
-    vt := v[cleap.root]
-    if vr > vl {
-      if vr > vt {
-        v[cleap.root],v[right] = vr,vt
+    if v.Less(left, right) {
+      if v.Less(cleap.root, right) {
+        v.Swap(cleap.root, right)
         cleap.root = right
         cleap.size -= 2
       } else {
         break
       }
     } else {
-      if vl > vt {
-        v[cleap.root],v[left] = vl,vt
+      if v.Less(cleap.root, left) {
+        v.Swap(cleap.root, left)
         cleap.root = left
         cleap.size -= 1
       } else {
@@ -83,13 +82,13 @@ func heapify(v []int, cleap leap) {
   }
 }
 
-func Sort(v []int) {
-  if len(v) <= 1 { return }
+func Sort(v sort.Interface) {
+  if v.Len() <= 1 { return }
   leaps := make([]leap, 0, 5)
   leaps = append(leaps, leap{0,1})
 
   // Build
-  for i := 1; i < len(v); i++ {
+  for i := 1; i < v.Len(); i++ {
     // Add the next element to the string of heaps
     llen := len(leaps)
     if llen >= 2 && leaps[llen-2].size == leaps[llen-1].size + 1 {
@@ -139,3 +138,7 @@ func Sort(v []int) {
     }
   }
 }
+
+
+func Ints(a []int) { Sort(sort.IntSlice(a)) }
+

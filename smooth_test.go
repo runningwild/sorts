@@ -15,7 +15,7 @@ func BasicSpec(c gospec.Context) {
   for i := range v {
     v[i] = len(v) - i - 1
   }
-  smooth.Sort(v)
+  smooth.Ints(v)
   for i := range v {
     c.Expect(v[i], Equals, i)
   }
@@ -26,7 +26,7 @@ func RepeatedNumbersSpec(c gospec.Context) {
   for i := range v {
     v[i] = i % 5
   }
-  smooth.Sort(v)
+  smooth.Ints(v)
   for i := 1; i < len(v); i++ {
     c.Expect(v[i-1] <= v[i], Equals, true)
   }
@@ -41,7 +41,7 @@ func ShuffleSpec(c gospec.Context) {
       v2[i] = v1[i]
     }
     sort.Ints(v1)
-    smooth.Sort(v2)
+    smooth.Ints(v2)
     for i := range v1 {
       c.Expect(v2[i], Equals, v1[i])
     }
@@ -57,7 +57,7 @@ func ShuffleSpec2(c gospec.Context) {
       v2[i] = v1[i]
     }
     sort.Ints(v1)
-    smooth.Sort(v2)
+    smooth.Ints(v2)
     for i := range v1 {
       c.Expect(v2[i], Equals, v1[i])
     }

@@ -4,7 +4,17 @@ import (
   "testing"
   "smooth"
   "sort"
+  "rand"
 )
+
+const size = 1000000
+var shuffled []int
+func init() {
+  shuffled = make([]int, size)
+  for i := range shuffled {
+    shuffled[i] = rand.Int()
+  }
+}
 
 func fillReverse(v []int) {
   for i := range v {
@@ -18,8 +28,18 @@ func fill(v []int) {
   }
 }
 
+func BenchmarkCopy(b *testing.B) {
+  v := make([]int, size)
+  v2 := make([]int, size)
+  for i := 0; i < b.N; i++ {
+    for i := range v {
+      v[i] = v2[i]
+    }
+  }
+}
+
 func BenchmarkQuicksortOnUnsorted(b *testing.B) {
-  v := make([]int, 1000000)
+  v := make([]int, size)
   for i := 0; i < b.N; i++ {
     fillReverse(v)
     sort.Ints(v)
@@ -27,7 +47,7 @@ func BenchmarkQuicksortOnUnsorted(b *testing.B) {
 }
 
 func BenchmarkSmoothsortOnUnsorted(b *testing.B) {
-  v := make([]int, 1000000)
+  v := make([]int, size)
   for i := 0; i < b.N; i++ {
     fillReverse(v)
     smooth.Sort(v)
@@ -35,7 +55,7 @@ func BenchmarkSmoothsortOnUnsorted(b *testing.B) {
 }
 
 func BenchmarkQuicksortOnSorted(b *testing.B) {
-  v := make([]int, 1000000)
+  v := make([]int, size)
   fill(v)
   for i := 0; i < b.N; i++ {
     sort.Ints(v)
@@ -43,6 +63,58 @@ func BenchmarkQuicksortOnSorted(b *testing.B) {
 }
 
 func BenchmarkSmoothsortOnSorted(b *testing.B) {
+  v := make([]int, size)
+  fill(v)
+  for i := 0; i < b.N; i++ {
+    smooth.Sort(v)
+  }
+}
+
+func BenchmarkQuicksortOnShuffled(b *testing.B) {
+  v := make([]int, size)
+  for i := 0; i < b.N; i++ {
+    for i := range v {
+      v[i] = shuffled[i]
+    }
+    sort.Ints(v)
+  }
+}
+
+func BenchmarkSmoothsortOnShuffled(b *testing.B) {
+  v := make([]int, size)
+  for i := 0; i < b.N; i++ {
+    for i := range v {
+      v[i] = shuffled[i]
+    }
+    smooth.Sort(v)
+  }
+}
+
+func BenchmarkSmoothsortOnSorted1000(b *testing.B) {
+  v := make([]int, 1000)
+  fill(v)
+  for i := 0; i < b.N; i++ {
+    smooth.Sort(v)
+  }
+}
+
+func BenchmarkSmoothsortOnSorted10000(b *testing.B) {
+  v := make([]int, 10000)
+  fill(v)
+  for i := 0; i < b.N; i++ {
+    smooth.Sort(v)
+  }
+}
+
+func BenchmarkSmoothsortOnSorted100000(b *testing.B) {
+  v := make([]int, 100000)
+  fill(v)
+  for i := 0; i < b.N; i++ {
+    smooth.Sort(v)
+  }
+}
+
+func BenchmarkSmoothsortOnSorted1000000(b *testing.B) {
   v := make([]int, 1000000)
   fill(v)
   for i := 0; i < b.N; i++ {

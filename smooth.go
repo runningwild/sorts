@@ -16,12 +16,6 @@ type leap struct {
   size int  // the size of the heap is given by leo[heap.size]
 }
 
-func (l leap) childRoots() (left,right int) {
-  right = l.root - 1
-  left = right - leo[l.size - 2]
-  return
-}
-
 func stringify(v []int, leaps []leap) int {
   k := len(leaps) - 1
   for j := k - 1; j >= 0; j-- {
@@ -35,7 +29,8 @@ func stringify(v []int, leaps []leap) int {
         v[kr],v[jr] = vj,vk
         k = j
       } else {
-        left,right := leaps[k].childRoots()
+        right := leaps[k].root - 1
+        left := right - leo[leaps[k].size - 2]
         if size <= 1 || vj > v[right] && vj > v[left] {
           v[kr],v[jr] = vj,vk
           k = j
@@ -50,7 +45,8 @@ func stringify(v []int, leaps []leap) int {
 
 func heapify(v []int, cleap leap) {
   for cleap.size > 1 {
-    left,right := cleap.childRoots()
+    right := cleap.root - 1
+    left := right - leo[cleap.size - 2]
     vl := v[left]
     vr := v[right]
     vt := v[cleap.root]
@@ -74,31 +70,9 @@ func heapify(v []int, cleap leap) {
   }
 }
 
-func fsckHeap(v []int, cleap leap) bool {
-  if cleap.size <= 1 { return false }
-  left,right := cleap.childRoots()
-  if v[left] > v[cleap.root] || v[right] > v[cleap.root] {
-    print("Failed on heap\n")
-    return true
-  }
-  return fsckHeap(v, leap{left, cleap.size-1}) || fsckHeap(v, leap{right, cleap.size-2})
-}
-func fsck(v []int, leaps []leap) bool {
-  for i := range leaps {
-    if fsckHeap(v, leaps[i]) { return true }
-  }
-  for i := 1; i < len(leaps); i++ {
-    if v[leaps[i-1].root] > v[leaps[i].root] {
-      print("Failed on string\n")
-      return true
-    }
-  }
-  return false
-}
-
 func Sort(v []int) {
   if len(v) <= 1 { return }
-  var leaps []leap
+  leaps := make([]leap, 0, 5)
   leaps = append(leaps, leap{0,1})
 
   // Build
@@ -124,10 +98,12 @@ func Sort(v []int) {
     leapi := len(leaps) - 1
     if leaps[leapi].size <= 1 {
       leapi = stringify(v, leaps)
+      if leapi != len(leaps) - 1 {
+        heapify(v, leaps[leapi])
+      }
+    } else {
+      heapify(v, leaps[leapi])
     }
-
-    // Should be able to avoid doing this in some cases, not quite sure what though.
-    heapify(v, leaps[leapi])
   }
 
   // Shrink
@@ -135,13 +111,18 @@ func Sort(v []int) {
     cleap := leaps[len(leaps) - 1]
     leaps = leaps[0 : len(leaps) - 1]
     if cleap.size > 1 {
-      left,right := cleap.childRoots()
+      right := cleap.root - 1
+      left := right - leo[cleap.size - 2]
       leaps = append(leaps, leap{ root : left, size : cleap.size-1 })
       leapi := stringify(v, leaps)
-      heapify(v, leaps[leapi])
+      if leapi < len(leaps) - 1 {
+        heapify(v, leaps[leapi])
+      }
       leaps = append(leaps, leap{ root : right, size : cleap.size-2 })
       leapi = stringify(v, leaps)
-      heapify(v, leaps[leapi])
+      if leapi < len(leaps) - 1 {
+         heapify(v, leaps[leapi])
+      }
     }
   }
 }

@@ -1,3 +1,8 @@
+// Implementation of Edsger Dijkstra's smooth sort
+// Worst case: O(n log n)
+// Best case: O(n)
+// Called 'smooth' because it has a smooth transition between linear time and
+// O(n log n) time as the input set transitions from sorted to unsorted.
 package smooth
 
 var leo []int
@@ -16,6 +21,9 @@ type leap struct {
   size int  // the size of the heap is given by leo[heap.size]
 }
 
+// Stringify will reorder the root nodes to make sure that they are in
+// increasing order.  This is called when a new heap is added at the end
+// such that the only root node that is out of order is the new one.
 func stringify(v []int, leaps []leap) int {
   k := len(leaps) - 1
   for j := k - 1; j >= 0; j-- {
@@ -37,12 +45,17 @@ func stringify(v []int, leaps []leap) int {
         }
       }
     } else {
+      // Since the only node that is out of order is the one we start with,
+      // once it is in order we can bail out.
       return k
     }
   }
   return k
 }
 
+// Heapify is called when two heaps are combined under a new root node.  Since
+// the two sub-heaps are necessarily heaps it suffices to swap this node with
+// its largest child repeatedly until it is larger than both of its children.
 func heapify(v []int, cleap leap) {
   for cleap.size > 1 {
     right := cleap.root - 1

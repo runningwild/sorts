@@ -8,8 +8,10 @@ import (
   "sort"
 )
 
+const N = 10000
+
 func BasicSpec(c gospec.Context) {
-  v := make([]int, 100)
+  v := make([]int, N)
   for i := range v {
     v[i] = len(v) - i - 1
   }
@@ -20,7 +22,7 @@ func BasicSpec(c gospec.Context) {
 }
 
 func RepeatedNumbersSpec(c gospec.Context) {
-  v := make([]int, 100)
+  v := make([]int, N)
   for i := range v {
     v[i] = i % 5
   }
@@ -31,9 +33,25 @@ func RepeatedNumbersSpec(c gospec.Context) {
 }
 
 func ShuffleSpec(c gospec.Context) {
-  v1 := make([]int, 10000)
-  v2 := make([]int, 10000)
-  for j := 0; j < 10; j++ {
+  v1 := make([]int, N)
+  v2 := make([]int, N)
+  for j := 0; j < 100; j++ {
+    for i := range v1 {
+      v1[i] = rand.Int()
+      v2[i] = v1[i]
+    }
+    sort.Ints(v1)
+    smooth.Sort(v2)
+    for i := range v1 {
+      c.Expect(v2[i], Equals, v1[i])
+    }
+  }
+}
+
+func ShuffleSpec2(c gospec.Context) {
+  v1 := make([]int, 100)
+  v2 := make([]int, 100)
+  for j := 0; j < N; j++ {
     for i := range v1 {
       v1[i] = rand.Int()
       v2[i] = v1[i]

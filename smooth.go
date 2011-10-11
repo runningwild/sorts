@@ -55,6 +55,8 @@ func stringify(v []int, leaps []leap) int {
         v[leaps[k].root],v[leaps[j].root] = v[leaps[j].root],v[leaps[k].root]
         k = j
       }
+    } else {
+      return k
     }
   }
   return k
@@ -124,8 +126,18 @@ func Sort(v []int) {
         leaps = append(leaps, leap{ root : i, size : 1 })
       }
     }
-    // stringify
-    leapi := stringify(v, leaps)
+
+    // stringify - Despite what wikipedia says I think we only need to maintain
+    // the string property when the heap that was just added has exactly one
+    // element.  If we are combining heaps to make a new heap then those leaf nodes
+    // already satisfy the string property and the larger of those will bubble up
+    // when we heapify and will obviously still satisfy the string property.
+    leapi := len(leaps) - 1
+    if leaps[leapi].size <= 1 {
+      leapi = stringify(v, leaps)
+    }
+
+    // Should be able to avoid doing this in some cases, not quite sure what though.
     heapify(v, leaps[leapi])
   }
 

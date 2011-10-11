@@ -11,6 +11,7 @@ func TestAllSpecs(t *testing.T) {
   r.AddSpec(BasicSpec)
   r.AddSpec(RepeatedNumbersSpec)
   r.AddSpec(ShuffleSpec)
+  r.AddSpec(ShuffleSpec2)
   gospec.MainGoTest(r, t)
 }
 

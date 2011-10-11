@@ -8,7 +8,7 @@ import (
   "sort"
 )
 
-const N = 10000
+const N = 1000
 
 func BasicSpec(c gospec.Context) {
   v := make([]int, N)

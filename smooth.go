@@ -1,9 +1,5 @@
 package smooth
 
-import (
-  "fmt"
-)
-
 var leo []int
 
 func init() {
@@ -26,34 +22,24 @@ func (l leap) childRoots() (left,right int) {
   return
 }
 
-func makeLeaps(start,remaining int, l *[]leap) {
-  if remaining == 0 { return }
-  i := 0
-  for leo[i] <= remaining {
-    fmt.Printf("%d %d\n", leo[i], remaining)
-    i++
-  }
-  i--
-  root := start + leo[i]
-  *l = append(*l, leap{ root : root, size : i })
-  makeLeaps(root, remaining - leo[i], l)
-}
-
 func stringify(v []int, leaps []leap) int {
   k := len(leaps) - 1
   for j := k - 1; j >= 0; j-- {
-    val := v[leaps[j].root]
-    if val > v[leaps[k].root] {
+    jr := leaps[j].root
+    kr := leaps[k].root
+    vj := v[jr]
+    vk := v[kr]
+    if vj > vk {
       size := leaps[k].size
-      if size > 1 {
+      if size <= 1 {
+        v[kr],v[jr] = vj,vk
+        k = j
+      } else {
         left,right := leaps[k].childRoots()
-        if val > v[right] && val > v[left] {
-          v[leaps[k].root],v[leaps[j].root] = v[leaps[j].root],v[leaps[k].root]
+        if size <= 1 || vj > v[right] && vj > v[left] {
+          v[kr],v[jr] = vj,vk
           k = j
         }
-      } else {
-        v[leaps[k].root],v[leaps[j].root] = v[leaps[j].root],v[leaps[k].root]
-        k = j
       }
     } else {
       return k
@@ -65,17 +51,20 @@ func stringify(v []int, leaps []leap) int {
 func heapify(v []int, cleap leap) {
   for cleap.size > 1 {
     left,right := cleap.childRoots()
-    if v[right] > v[left] {
-      if v[right] > v[cleap.root] {
-        v[cleap.root],v[right] = v[right],v[cleap.root]
+    vl := v[left]
+    vr := v[right]
+    vt := v[cleap.root]
+    if vr > vl {
+      if vr > vt {
+        v[cleap.root],v[right] = vr,vt
         cleap.root = right
         cleap.size -= 2
       } else {
         break
       }
     } else {
-      if v[left] > v[cleap.root] {
-        v[cleap.root],v[left] = v[left],v[cleap.root]
+      if vl > vt {
+        v[cleap.root],v[left] = vl,vt
         cleap.root = left
         cleap.size -= 1
       } else {

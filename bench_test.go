@@ -7,7 +7,7 @@ import (
   "rand"
 )
 
-const size = 10000
+const size = 1000000
 var shuffled []int
 func init() {
   shuffled = make([]int, size)
@@ -85,6 +85,36 @@ func BenchmarkSmoothsortOnShuffled(b *testing.B) {
   for i := 0; i < b.N; i++ {
     for i := range v {
       v[i] = shuffled[i]
+    }
+    smooth.Ints(v)
+  }
+}
+
+func BenchmarkQuicksortOnPartiallySorted(b *testing.B) {
+  src := make([]int, size)
+  fill(src)
+  for i := 0; i < len(src); i += 10 {
+    src[i] = len(src) - i - 1
+  }
+  v := make([]int, size)
+  for i := 0; i < b.N; i++ {
+    for i := range v {
+      v[i] = src[i]
+    }
+    sort.Ints(v)
+  }
+}
+
+func BenchmarkSmoothsortOnPartiallySorted(b *testing.B) {
+  src := make([]int, size)
+  fill(src)
+  for i := 0; i < len(src); i += 25 {
+    src[i] = len(src) - i - 1
+  }
+  v := make([]int, size)
+  for i := 0; i < b.N; i++ {
+    for i := range v {
+      v[i] = src[i]
     }
     smooth.Ints(v)
   }

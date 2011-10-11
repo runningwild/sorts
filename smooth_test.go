@@ -6,6 +6,7 @@ import (
   "smooth"
   "rand"
   "sort"
+  "fmt"
 )
 
 const N = 1000
@@ -62,4 +63,51 @@ func ShuffleSpec2(c gospec.Context) {
       c.Expect(v2[i], Equals, v1[i])
     }
   }
+}
+
+type IntCounter []int
+var swap_count,less_count int
+func (p IntCounter) Len() int { return len(p) }
+func (p IntCounter) Less(i, j int) bool {
+  less_count++
+  return p[i] < p[j]
+}
+func (p IntCounter) Swap(i, j int) {
+  swap_count++
+  p[i], p[j] = p[j], p[i]
+}
+
+func CountSpec(c gospec.Context) {
+  src := make([]int, N)
+  v := make([]int, N)
+  for i := range src {
+    src[i] = i
+  }
+
+  swap_count = 0
+  less_count = 0
+  copy(v, src)
+  sort.Sort(IntCounter(v))
+  fmt.Printf("Quicksort on sorted: %d %d\n", swap_count, less_count)
+
+  swap_count = 0
+  less_count = 0
+  copy(v, src)
+  smooth.Sort(IntCounter(v))
+  fmt.Printf("Smoothsort on sorted: %d %d\n", swap_count, less_count)
+
+  for i := range src {
+    src[i] = len(src) - i - 1
+  }
+  swap_count = 0
+  less_count = 0
+  copy(v, src)
+  sort.Sort(IntCounter(v))
+  fmt.Printf("Quicksort on reversed: %d %d\n", swap_count, less_count)
+
+  swap_count = 0
+  less_count = 0
+  copy(v, src)
+  smooth.Sort(IntCounter(v))
+  fmt.Printf("Smoothsort on reversed: %d %d\n", swap_count, less_count)
 }

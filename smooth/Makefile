@@ -3,7 +3,7 @@
 
 include $(GOROOT)/src/Make.inc
 
-TARG=smooth
+TARG=github.com/runningwild/sorts/smooth
 GOFILES=\
 	smooth.go\
 

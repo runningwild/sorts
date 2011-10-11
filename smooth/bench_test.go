@@ -2,12 +2,12 @@ package smooth_test
 
 import (
   "testing"
-  "smooth"
+  "github.com/runningwild/sorts/smooth"
   "sort"
   "rand"
 )
 
-const size = 1000000
+const size = 1000
 var shuffled []int
 func init() {
   shuffled = make([]int, size)

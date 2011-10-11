@@ -3,7 +3,7 @@ package smooth_test
 import (
   . "gospec"
   "gospec"
-  "smooth"
+  "github.com/runningwild/sorts/smooth"
   "rand"
   "sort"
   "fmt"
@@ -84,17 +84,18 @@ func CountSpec(c gospec.Context) {
     src[i] = i
   }
 
+  fmt.Printf("                        swaps\tcomparisons\n")
   swap_count = 0
   less_count = 0
   copy(v, src)
   sort.Sort(IntCounter(v))
-  fmt.Printf("Quicksort on sorted: %d %d\n", swap_count, less_count)
+  fmt.Printf("Quicksort on sorted:    %d\t%d\n", swap_count, less_count)
 
   swap_count = 0
   less_count = 0
   copy(v, src)
   smooth.Sort(IntCounter(v))
-  fmt.Printf("Smoothsort on sorted: %d %d\n", swap_count, less_count)
+  fmt.Printf("Smoothsort on sorted:   %d\t%d\n", swap_count, less_count)
 
   for i := range src {
     src[i] = len(src) - i - 1
@@ -103,11 +104,11 @@ func CountSpec(c gospec.Context) {
   less_count = 0
   copy(v, src)
   sort.Sort(IntCounter(v))
-  fmt.Printf("Quicksort on reversed: %d %d\n", swap_count, less_count)
+  fmt.Printf("Quicksort on reversed:  %d\t%d\n", swap_count, less_count)
 
   swap_count = 0
   less_count = 0
   copy(v, src)
   smooth.Sort(IntCounter(v))
-  fmt.Printf("Smoothsort on reversed: %d %d\n", swap_count, less_count)
+  fmt.Printf("Smoothsort on reversed: %d\t%d\n", swap_count, less_count)
 }

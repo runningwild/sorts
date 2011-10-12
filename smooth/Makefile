@@ -7,13 +7,5 @@ TARG=github.com/runningwild/sorts/smooth
 GOFILES=\
 	smooth.go\
 
-# gb: this is the local install
-GBROOT=.
-
-# gb: compile/link against local install
-GC+= -I $(GBROOT)/_obj
-LD+= -L $(GBROOT)/_obj
-
-package: $(GBROOT)/_obj/$(TARG).a
 
 include $(GOROOT)/src/Make.pkg

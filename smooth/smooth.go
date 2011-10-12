@@ -10,9 +10,11 @@
 // numbers grow.
 package smooth
 
-import (
-	"sort"
-)
+type Interface interface {
+	Len() int
+	Less(i, j int) bool
+	Swap(i, j int)
+}
 
 var leo []int
 
@@ -28,7 +30,7 @@ func init() {
 // Stringify will reorder the root nodes to make sure that they are in
 // increasing order.  This is called when a new heap is added at the end
 // such that the only root node that is out of order is the new one.
-func stringify(v sort.Interface, roots, sizes []int) int {
+func stringify(v Interface, roots, sizes []int) int {
 	k := len(roots) - 1
 	for j := k - 1; j >= 0; j-- {
 		jr := roots[j]
@@ -58,7 +60,7 @@ func stringify(v sort.Interface, roots, sizes []int) int {
 // Heapify is called when two heaps are combined under a new root node.  Since
 // the two sub-heaps are necessarily heaps it suffices to swap this node with
 // its largest child repeatedly until it is larger than both of its children.
-func heapify(v sort.Interface, root, size int) {
+func heapify(v Interface, root, size int) {
 	for size > 1 {
 		right := root - 1
 		left := right - leo[size-2]
@@ -82,7 +84,7 @@ func heapify(v sort.Interface, root, size int) {
 	}
 }
 
-func Sort(v sort.Interface) {
+func Sort(v Interface) {
 	if v.Len() <= 1 {
 		return
 	}
@@ -150,6 +152,65 @@ func Sort(v sort.Interface) {
 	}
 }
 
-func Ints(a []int)         { Sort(sort.IntSlice(a)) }
-func Float64s(a []float64) { Sort(sort.Float64Slice(a)) }
-func Strings(a []string)   { Sort(sort.StringSlice(a)) }
+func IsSorted(data Interface) bool {
+	n := data.Len()
+	for i := n - 1; i > 0; i-- {
+		if data.Less(i, i-1) {
+			return false
+		}
+	}
+	return true
+}
+
+
+// Convenience types for common cases
+
+// IntSlice attaches the methods of Interface to []int, sorting in increasing order.
+type IntSlice []int
+
+func (p IntSlice) Len() int           { return len(p) }
+func (p IntSlice) Less(i, j int) bool { return p[i] < p[j] }
+func (p IntSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+
+// Sort is a convenience method.
+func (p IntSlice) Sort() { Sort(p) }
+
+
+// Float64Slice attaches the methods of Interface to []float64, sorting in increasing order.
+type Float64Slice []float64
+
+func (p Float64Slice) Len() int           { return len(p) }
+func (p Float64Slice) Less(i, j int) bool { return p[i] < p[j] }
+func (p Float64Slice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+
+// Sort is a convenience method.
+func (p Float64Slice) Sort() { Sort(p) }
+
+
+// StringSlice attaches the methods of Interface to []string, sorting in increasing order.
+type StringSlice []string
+
+func (p StringSlice) Len() int           { return len(p) }
+func (p StringSlice) Less(i, j int) bool { return p[i] < p[j] }
+func (p StringSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+
+// Sort is a convenience method.
+func (p StringSlice) Sort() { Sort(p) }
+
+
+// Convenience wrappers for common cases
+
+// Ints sorts an array of ints in increasing order.
+func Ints(a []int) { Sort(IntSlice(a)) }
+// Float64s sorts an array of float64s in increasing order.
+func Float64s(a []float64) { Sort(Float64Slice(a)) }
+// Strings sorts an array of strings in increasing order.
+func Strings(a []string) { Sort(StringSlice(a)) }
+
+
+// IntsAreSorted tests whether an array of ints is sorted in increasing order.
+func IntsAreSorted(a []int) bool { return IsSorted(IntSlice(a)) }
+// Float64sAreSorted tests whether an array of float64s is sorted in increasing order.
+func Float64sAreSorted(a []float64) bool { return IsSorted(Float64Slice(a)) }
+// StringsAreSorted tests whether an array of strings is sorted in increasing order.
+func StringsAreSorted(a []string) bool { return IsSorted(StringSlice(a)) }

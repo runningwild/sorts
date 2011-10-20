@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-import . "github.com/runningwild/sorts/smoothsort"
+import . "github.com/runningwild/sorts/smooth"
 
 var ints = [...]int{74, 59, 238, -784, 9845, 959, 905, 0, 0, 42, 7586, -5467984, 7586}
 var float64s = [...]float64{74.3, 59.0, math.Inf(1), 238.2, -784.0, 2.3, math.NaN(), math.NaN(), math.Inf(-1), 9845.768, -959.7485, 905, 7.8, 7.8}
@@ -89,14 +89,14 @@ func TestSortLarge_Random(t *testing.T) {
 
 func shuffle(v []int) {
 	var n int
-	for i := len(v)-1; i > 0; i-- {
+	for i := len(v) - 1; i > 0; i-- {
 		n = rand.Intn(i)
 		v[i], v[n] = v[n], v[i]
 	}
 }
 
 func partialShuffle(v []int, n int) {
-	for i := len(v)-1; n > 0; i-- {
+	for i := len(v) - 1; n > 0; i-- {
 		r := rand.Intn(i)
 		v[i], v[r] = v[r], v[i]
 		n--

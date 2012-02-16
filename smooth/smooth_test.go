@@ -4,6 +4,7 @@ import (
 	"math"
 	"math/rand"
 	"testing"
+	"sort"
 )
 
 import . "github.com/runningwild/sorts/smooth"
@@ -89,17 +90,16 @@ func TestSortLarge_Random(t *testing.T) {
 
 func shuffle(v []int) {
 	var n int
-	for i := len(v) - 1; i > 0; i-- {
+	for i := range v {
 		n = rand.Intn(i)
 		v[i], v[n] = v[n], v[i]
 	}
 }
 
 func partialShuffle(v []int, n int) {
-	for i := len(v) - 1; n > 0; i-- {
-		r := rand.Intn(i)
+	for i := range v {
+		r := rand.Intn(len(v))
 		v[i], v[r] = v[r], v[i]
-		n--
 	}
 }
 
@@ -365,4 +365,256 @@ func BenchmarkReversed1M(b *testing.B) {
 		Ints(v)
 		b.StopTimer()
 	}
+}
+
+func BenchmarkQuicksortSorted10(b *testing.B) {
+  v := make([]int, 10)
+  inOrder(v)
+  for i := 0; i < b.N; i++ {
+    sort.Ints(v)
+  }
+}
+
+func BenchmarkQuicksortMostlySorted10(b *testing.B) {
+  b.StopTimer()
+  v := make([]int, 10)
+  inOrder(v)
+  for i := 0; i < b.N; i++ {
+    partialShuffle(v, 5)
+    b.StartTimer()
+    sort.Ints(v)
+    b.StopTimer()
+  }
+}
+
+func BenchmarkQuicksortShuffled10(b *testing.B) {
+  b.StopTimer()
+  v := make([]int, 10)
+  for i := 0; i < b.N; i++ {
+    shuffle(v)
+    b.StartTimer()
+    sort.Ints(v)
+    b.StopTimer()
+  }
+}
+
+func BenchmarkQuicksortReversed10(b *testing.B) {
+  b.StopTimer()
+  v := make([]int, 10)
+  for i := 0; i < b.N; i++ {
+    reverse(v)
+    b.StartTimer()
+    sort.Ints(v)
+    b.StopTimer()
+  }
+}
+
+func BenchmarkQuicksortSorted100(b *testing.B) {
+  v := make([]int, 100)
+  inOrder(v)
+  for i := 0; i < b.N; i++ {
+    sort.Ints(v)
+  }
+}
+
+func BenchmarkQuicksortMostlySorted100(b *testing.B) {
+  b.StopTimer()
+  v := make([]int, 100)
+  inOrder(v)
+  for i := 0; i < b.N; i++ {
+    partialShuffle(v, 5)
+    b.StartTimer()
+    sort.Ints(v)
+    b.StopTimer()
+  }
+}
+
+func BenchmarkQuicksortShuffled100(b *testing.B) {
+  b.StopTimer()
+  v := make([]int, 100)
+  for i := 0; i < b.N; i++ {
+    shuffle(v)
+    b.StartTimer()
+    sort.Ints(v)
+    b.StopTimer()
+  }
+}
+
+func BenchmarkQuicksortReversed100(b *testing.B) {
+  b.StopTimer()
+  v := make([]int, 100)
+  for i := 0; i < b.N; i++ {
+    reverse(v)
+    b.StartTimer()
+    sort.Ints(v)
+    b.StopTimer()
+  }
+}
+
+func BenchmarkQuicksortSorted1k(b *testing.B) {
+  v := make([]int, 1000)
+  inOrder(v)
+  for i := 0; i < b.N; i++ {
+    sort.Ints(v)
+  }
+}
+
+func BenchmarkQuicksortMostlySorted1k(b *testing.B) {
+  b.StopTimer()
+  v := make([]int, 1000)
+  inOrder(v)
+  for i := 0; i < b.N; i++ {
+    partialShuffle(v, 5)
+    b.StartTimer()
+    sort.Ints(v)
+    b.StopTimer()
+  }
+}
+
+func BenchmarkQuicksortShuffled1k(b *testing.B) {
+  b.StopTimer()
+  v := make([]int, 1000)
+  for i := 0; i < b.N; i++ {
+    shuffle(v)
+    b.StartTimer()
+    sort.Ints(v)
+    b.StopTimer()
+  }
+}
+
+func BenchmarkQuicksortReversed1k(b *testing.B) {
+  b.StopTimer()
+  v := make([]int, 1000)
+  for i := 0; i < b.N; i++ {
+    reverse(v)
+    b.StartTimer()
+    sort.Ints(v)
+    b.StopTimer()
+  }
+}
+
+func BenchmarkQuicksortSorted10k(b *testing.B) {
+  v := make([]int, 10000)
+  inOrder(v)
+  for i := 0; i < b.N; i++ {
+    sort.Ints(v)
+  }
+}
+
+func BenchmarkQuicksortMostlySorted10k(b *testing.B) {
+  b.StopTimer()
+  v := make([]int, 10000)
+  inOrder(v)
+  for i := 0; i < b.N; i++ {
+    partialShuffle(v, 5)
+    b.StartTimer()
+    sort.Ints(v)
+    b.StopTimer()
+  }
+}
+
+func BenchmarkQuicksortShuffled10k(b *testing.B) {
+  b.StopTimer()
+  v := make([]int, 10000)
+  for i := 0; i < b.N; i++ {
+    shuffle(v)
+    b.StartTimer()
+    sort.Ints(v)
+    b.StopTimer()
+  }
+}
+
+func BenchmarkQuicksortReversed10k(b *testing.B) {
+  b.StopTimer()
+  v := make([]int, 10000)
+  for i := 0; i < b.N; i++ {
+    reverse(v)
+    b.StartTimer()
+    sort.Ints(v)
+    b.StopTimer()
+  }
+}
+
+func BenchmarkQuicksortSorted100k(b *testing.B) {
+  v := make([]int, 100000)
+  inOrder(v)
+  for i := 0; i < b.N; i++ {
+    sort.Ints(v)
+  }
+}
+
+func BenchmarkQuicksortMostlySorted100k(b *testing.B) {
+  b.StopTimer()
+  v := make([]int, 100000)
+  inOrder(v)
+  for i := 0; i < b.N; i++ {
+    partialShuffle(v, 5)
+    b.StartTimer()
+    sort.Ints(v)
+    b.StopTimer()
+  }
+}
+
+func BenchmarkQuicksortShuffled100k(b *testing.B) {
+  b.StopTimer()
+  v := make([]int, 100000)
+  for i := 0; i < b.N; i++ {
+    shuffle(v)
+    b.StartTimer()
+    sort.Ints(v)
+    b.StopTimer()
+  }
+}
+
+func BenchmarkQuicksortReversed100k(b *testing.B) {
+  b.StopTimer()
+  v := make([]int, 100000)
+  for i := 0; i < b.N; i++ {
+    reverse(v)
+    b.StartTimer()
+    sort.Ints(v)
+    b.StopTimer()
+  }
+}
+
+func BenchmarkQuicksortSorted1M(b *testing.B) {
+  v := make([]int, 1000000)
+  inOrder(v)
+  for i := 0; i < b.N; i++ {
+    sort.Ints(v)
+  }
+}
+
+func BenchmarkQuicksortMostlySorted1M(b *testing.B) {
+  b.StopTimer()
+  v := make([]int, 1000000)
+  inOrder(v)
+  for i := 0; i < b.N; i++ {
+    partialShuffle(v, 5)
+    b.StartTimer()
+    sort.Ints(v)
+    b.StopTimer()
+  }
+}
+
+func BenchmarkQuicksortShuffled1M(b *testing.B) {
+  b.StopTimer()
+  v := make([]int, 1000000)
+  for i := 0; i < b.N; i++ {
+    shuffle(v)
+    b.StartTimer()
+    sort.Ints(v)
+    b.StopTimer()
+  }
+}
+
+func BenchmarkQuicksortReversed1M(b *testing.B) {
+  b.StopTimer()
+  v := make([]int, 1000000)
+  for i := 0; i < b.N; i++ {
+    reverse(v)
+    b.StartTimer()
+    sort.Ints(v)
+    b.StopTimer()
+  }
 }

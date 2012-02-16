@@ -1,10 +1,8 @@
 Currently this repository only contains one sort, Smoothsort, that can be used as an alternative to Quicksort.  Details on the algorithm can be found at http://en.wikipedia.org/wiki/Smoothsort.  The smooth package can be goinstalled as follows:
 
-    goinstall github.com/runningwild/sorts/smooth
+    go get github.com/runningwild/sorts/smooth
 
-The package uses the same interface as the standard Go sort package, namely it sorts any structure conforming to sort.interface.  Convenient wrappers are included for sorting slices of ints, float64s, and strings.
-
-Testing is done with gospec which can be found at git://github.com/orfjackal/gospec.git
+The package uses the same interface as the standard Go sort package, namely it sorts any structure conforming to sort.interface.  The same convenient wrappers are included for sorting slices of ints, float64s, and strings as in the Go's standard sort package, so this package can be used as a drop-in replacement for the standard sort package.
 
 Here is a comparison of the number of swaps and comparisons performed when using Go's Quicksort or this package's Smoothsort on arrays of 1k elements that are already sorted or reverse-sorted.
 
@@ -15,35 +13,39 @@ Here is a comparison of the number of swaps and comparisons performed when using
     Smoothsort on reversed: 10708       26436
 
 
-Here are some benchmarks on my laptop (r60.2, darwin/amd64).  Copy is a benchmark that just includes the copying required on Unsorted, Shuffled, and PartiallySorted since those slices cannot just be reused because they get sorted:
+Here are some benchmarks on my laptop (weekly.2012-02-14, darwin/amd64).  MostlySorted is an array, A, that is first sorted, then every fifth element in A is swapped with a random element in A.
 
-    Arrays of 1M elements:
-    Copy                                500     3487014 ns/op
-    Quicksort On Unsorted                 5   485252600 ns/op
-    Smoothsort On Unsorted                1  1234045000 ns/op
-    Quicksort On Sorted                   5   479280600 ns/op
-    Smoothsort On Sorted                 20    96429150 ns/op
-    Quicksort On Shuffled                 5   709480600 ns/op
-    Smoothsort On Shuffled                1  1648161000 ns/op
-    Quicksort On PartiallySorted          5   518328800 ns/op
-    Smoothsort On PartiallySorted         5   525332400 ns/op
+    Smoothsort on 1k elements
+    Sorted        101431 ns/op
+    MostlySorted  550455 ns/op
+    Shuffled       95635 ns/op
+    Reversed      730083 ns/op
 
-    Arrays of 1k elements:
-    Copy                             500000        3379 ns/op
-    Quicksort On Unsorted             10000      236227 ns/op
-    Smoothsort On Unsorted             5000      696742 ns/op
-    Quicksort On Sorted               10000      234545 ns/op
-    Smoothsort On Sorted              20000       94916 ns/op
-    Quicksort On Shuffled              5000      351280 ns/op
-    Smoothsort On Shuffled             2000      755692 ns/op
-    Quicksort On PartiallySorted      10000      266571 ns/op
-    Smoothsort On PartiallySorted      5000      352206 ns/op
+    Quicksort on 1k elements
+    Sorted        243270 ns/op
+    MostlySorted  299113 ns/op
+    Shuffled       39798 ns/op
+    Reversed      245046 ns/op
+
+    Smoothsort on 1M elements
+    Sorted         101.388 ms/op
+    MostlySorted  1002.774 ms/op
+    Shuffled        93.598 ms/op
+    Reversed      1290.697 ms/op
+
+    Quicksort on 1M elements
+    Sorted         519.893 ms/op
+    MostlySorted   625.448 ms/op
+    Shuffled        37.308 ms/op
+    Reversed       523.922 ms/op
 
 And to show that Smoothsort takes linear time when the input is sorted:
 
-    Smoothsort On Sorted 1000         20000       94340 ns/op
-    Smoothsort On Sorted 10000         2000      936181 ns/op
-    Smoothsort On Sorted 100000         200     9415185 ns/op
-    Smoothsort On Sorted 1000000         20    95552350 ns/op
+    Elements             Time
 
-
+          10       1326 ns/op
+         100      10682 ns/op
+        1000     102360 ns/op
+       10000    1018905 ns/op
+      100000   10223760 ns/op
+     1000000  103879200 ns/op

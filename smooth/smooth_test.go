@@ -1,8 +1,8 @@
-package smoothsort_test
+package smooth_test
 
 import (
 	"math"
-	"rand"
+	"math/rand"
 	"testing"
 )
 

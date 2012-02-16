@@ -1,8 +1,8 @@
-package insertionsort_test
+package insertion_test
 
 import (
   "math"
-  "rand"
+  "math/rand"
   "sort"
   "testing"
 )
